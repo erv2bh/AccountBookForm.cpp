@@ -1,0 +1,192 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "winres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// 한국어(대한민국) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)
+LANGUAGE LANG_KOREAN, SUBLANG_DEFAULT
+#pragma code_page(949)
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""winres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ACCOUNTBOOKFORM DIALOGEX 0, 0, 413, 274
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_WINDOWEDGE
+CAPTION "가계부"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    GROUPBOX        "계  정",IDC_STATIC_ACCOUNT,18,17,286,131
+    CONTROL         "  수   입",IDC_RADIO_INCOME,"Button",BS_AUTORADIOBUTTON,52,33,40,10
+    CONTROL         "  지   출",IDC_RADIO_OUTGO,"Button",BS_AUTORADIOBUTTON,123,33,40,10
+    LTEXT           "일  자",IDC_STATIC_DATE,31,57,18,8
+    LTEXT           "적  요",IDC_STATIC_CONTENTS,31,74,18,8
+    LTEXT           "금  액",IDC_STATIC_AMOUNT,31,91,18,8
+    LTEXT           "잔  액",IDC_STATIC_BALANCE,31,108,18,8
+    LTEXT           "비  고",IDC_STATIC_NOTE,31,125,18,8
+    CONTROL         "",IDC_DATETIMEPICKER_DATE,"SysDateTimePick32",DTS_RIGHTALIGN | WS_TABSTOP,63,54,65,13
+    EDITTEXT        IDC_EDIT_CONTENTS,63,72,40,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_AMOUNT,63,89,40,12,ES_AUTOHSCROLL
+    LTEXT           "",IDC_EDIT_BALANCE,63,107,44,8
+    EDITTEXT        IDC_EDIT_NOTE,63,122,40,12,ES_AUTOHSCROLL
+    CONTROL         "",IDC_LIST_ACCOUNT,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SHAREIMAGELISTS | LVS_AUTOARRANGE | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,16,156,289,107,WS_EX_TRANSPARENT
+    PUSHBUTTON      "기재하기",IDC_BUTTON_RECORD,337,20,50,14
+    PUSHBUTTON      "고 치 기",IDC_BUTTON_CORRECT,337,47,50,14
+    PUSHBUTTON      "찾    기",IDC_BUTTON_FIND,337,74,50,14
+    PUSHBUTTON      "정산하기",IDC_BUTTON_CALCULATE,337,101,50,14
+END
+
+IDD_FINDINGFORM DIALOGEX 0, 0, 444, 264
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_WINDOWEDGE
+CAPTION "찾  기"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    GROUPBOX        "조  건",IDC_STATIC_CONDITION,17,15,332,82
+    CONTROL         "일  자",IDC_CHECK_DATE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,33,43,33,10
+    CONTROL         "적  요",IDC_CHECK_CONTENTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,33,68,33,10
+    CONTROL         "",IDC_LIST_ACCOUNT,"SysListView32",LVS_REPORT | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,19,103,330,130,WS_EX_DLGMODALFRAME | WS_EX_TRANSPARENT
+    LTEXT           "처음 일자",IDC_STATIC_STARTDATE,97,27,31,8
+    CONTROL         "",IDC_DATETIMEPICKER_STARTDATE,"SysDateTimePick32",DTS_RIGHTALIGN | WS_TABSTOP,77,40,64,15
+    CONTROL         "",IDC_DATETIMEPICKER_ENDDATE,"SysDateTimePick32",DTS_RIGHTALIGN | WS_TABSTOP,166,40,65,15
+    LTEXT           "마지막 일자",IDC_STATIC_ENDDATE,181,27,44,8
+    LTEXT           "~",IDC_STATIC_HYPON,152,44,8,8
+    EDITTEXT        IDC_EDIT_CONTENTS,77,64,64,14,ES_AUTOHSCROLL
+    LTEXT           "총 수 입",IDC_STATIC_TOTALINCOME,19,244,29,8
+    LTEXT           "총 지 출",IDC_STATIC_TOTALOUTGO,99,244,28,8
+    LTEXT           "차  액",IDC_STATIC_BALANCE,179,244,33,8
+    PUSHBUTTON      "찾    기",IDC_BUTTON_FIND,369,20,50,14
+    PUSHBUTTON      "정산하기",IDC_BUTTON_CALCULATE,369,49,50,14
+    LTEXT           "",IDC_EDIT_TOTALINCOME,50,244,30,8
+    LTEXT           "",IDC_EDIT_TOTALOUTGO,129,244,32,8
+    LTEXT           "",IDC_EDIT_BALANCE,205,244,33,8
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_ACCOUNTBOOKFORM, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 406
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 267
+    END
+
+    IDD_FINDINGFORM, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 437
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 257
+        HORZGUIDE, 185
+        HORZGUIDE, 194
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_ACCOUNTBOOKFORM AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_FINDINGFORM AFX_DIALOG_LAYOUT
+BEGIN
+    0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 100,
+    0, 0, 0, 0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+
+
+#endif    // 한국어(대한민국) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
