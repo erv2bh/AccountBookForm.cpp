@@ -65,29 +65,29 @@ AccountBook& AccountBook::operator=(const AccountBook& source) {
 Long AccountBook::Record(Date date, string contents, Currency amount, string note) {
 	Account* account = 0;
 	Currency balance = 0;
-	if (this->length == 0) {
+	if (this->length == 0) { //사용량이 0 일 경우 잔액은 입력받은 금액과 동일
 		balance = amount;
 	}
-	else if (this->length > 0) {
+	else if (this->length > 0) { //0이 아닐경우 잔액은 이전배열의 잔액과 동일
 		balance = this->accounts[this->length-1]->GetBalance();
-		balance = balance + amount;
+		balance = balance + amount; //이전배열의 잔액과 입력받은 금액 합산
 	}
 	
 	Long index = this->length;
-	if (amount > 0) {
+	if (amount > 0) { //입력받은 금액이 양수일경우 수입 객체를 만듬
 		account = new Income(date, contents, amount, balance, note);
 	}
-	else if (amount < 0) {
+	else if (amount < 0) { //음수일경우 지출 객체를 만듬
 		account = new Outgo(date, contents, amount, balance, note);
 	}
-	if (this->length < this->capacity) {
+	if (this->length < this->capacity) { 
 		index = this->accounts.Store(index, account);
 	}
 	else if (this->length >= this->capacity) {
 		index = this->accounts.AppendFromRear(account);
 		this->capacity++;
 	}
-	this->length++;
+	this->length++; //사용량을 늘려줌
 	return index;
 }
 

@@ -57,15 +57,15 @@ BOOL AccountBookForm::OnInitDialog() {
 		Currency balance = account->GetBalance();
 		CString note = CString(account->GetNote().c_str());
 
-		CString date_;
-		date_.Format("%4d-%02d-%02d", date.GetYear(), date.GetMonth(), date.GetDay());
+		CString dateString;
+		dateString.Format("%4d-%02d-%02d", date.GetYear(), date.GetMonth(), date.GetDay());
 		
-		CString amount_;
-		amount_.Format("%.0f", amount);
+		CString amountString;
+		amountString.Format("%.0f", amount);
 		int j = 0;
-		j = amount_.GetLength() - 3;
+		j = amountString.GetLength() - 3;
 		while (j > 0) {
-			amount_.Insert(j, ',');
+			amountString.Insert(j, ',');
 			j = j - 3;
 		}
 
@@ -82,9 +82,9 @@ BOOL AccountBookForm::OnInitDialog() {
 		else {
 			((CListCtrl*)GetDlgItem(IDC_LIST_ACCOUNT))->InsertItem(i, _T(""), 1);
 		}
-		((CListCtrl*)GetDlgItem(IDC_LIST_ACCOUNT))->SetItemText(i, 0, date_);
+		((CListCtrl*)GetDlgItem(IDC_LIST_ACCOUNT))->SetItemText(i, 0, dateString);
 		((CListCtrl*)GetDlgItem(IDC_LIST_ACCOUNT))->SetItemText(i, 1, contents);
-		((CListCtrl*)GetDlgItem(IDC_LIST_ACCOUNT))->SetItemText(i, 2, amount_);
+		((CListCtrl*)GetDlgItem(IDC_LIST_ACCOUNT))->SetItemText(i, 2, amountString);
 		((CListCtrl*)GetDlgItem(IDC_LIST_ACCOUNT))->SetItemText(i, 3, balance_);
 		((CListCtrl*)GetDlgItem(IDC_LIST_ACCOUNT))->SetItemText(i, 4, note);
 		i++;
@@ -95,53 +95,56 @@ BOOL AccountBookForm::OnInitDialog() {
 
 void AccountBookForm::OnRecordButtonClicked() {
 	CTime time;
+	//달력에서 날짜를 가져온다
 	((CDateTimeCtrl*)GetDlgItem(IDC_DATETIMEPICKER_DATE))->GetTime(time);
 	int year, month, day;
+	//날짜를 년,월,일로 추출한다
 	year = time.GetYear();
 	month = time.GetMonth();
 	day = time.GetDay();
 	CString contents;
 	Currency amount;
-	CString amount_;
+	CString amountString;
 	CString note;
+	//적요 금액 비고를 읽는다
 	GetDlgItem(IDC_EDIT_CONTENTS)->GetWindowTextA(contents);
-	GetDlgItem(IDC_EDIT_AMOUNT)->GetWindowTextA(amount_);
+	GetDlgItem(IDC_EDIT_AMOUNT)->GetWindowTextA(amountString);
 	GetDlgItem(IDC_EDIT_NOTE)->GetWindowTextA(note);
-
-	amount = atof(amount_);
-	
+	//금액을 문자열에서 통화형으로 형변환한다
+	amount = atof(amountString);
+	//날짜 객체를 만든다
 	Date date(year, static_cast<Month>(month), day);
-
+	//지출 라디오버튼이 체크되었는지 확인한다
 	int outgoCheck = ((CButton*)GetDlgItem(IDC_RADIO_OUTGO))->GetCheck();
-	
+	//체크되었다면 금액을 음수로 바꾼다
 	if (outgoCheck == BST_CHECKED) {
 		amount = amount * -1;
 	}
-
+	//정보를 기재한다
 	Long index = this->accountBook->Record(date, (LPCTSTR)contents, amount, (LPCTSTR)note);
-	Insert(index);
-	Account* account = this->accountBook->GetAt(index);
+	Insert(index);//데이터베이스에 기재한다
+	Account* account = this->accountBook->GetAt(index);//현재 계정을 가져온다
 	
-	date = account->GetDate();
-	contents = CString(account->GetContents().c_str());
-	amount = account->GetAmount();
-	if (amount < 0) {
+	date = account->GetDate(); //계정에서 날짜를 가져온다
+	contents = CString(account->GetContents().c_str()); //계정에서 적요를 가져온다
+	amount = account->GetAmount(); //계정에서 금액을 가져온다
+	if (amount < 0) { //금액이 음수면 양수로 바꾼다
 		amount *= -1;
 	}
-	Currency balance = account->GetBalance();
-	note = CString(account->GetNote().c_str());
+	Currency balance = account->GetBalance(); //잔액을 가져온다
+	note = CString(account->GetNote().c_str()); //비고를 가져온다
 
-	CString date_;
-	date_.Format("%4d-%02d-%02d", date.GetYear(), date.GetMonth(), date.GetDay());
+	CString dateString;//날짜를 0000-00-00형식으로 만든다
+	dateString.Format("%4d-%02d-%02d", date.GetYear(), date.GetMonth(), date.GetDay());
 
-	amount_.Format("%.0f", amount);
-	int i = 0;
-	i = amount_.GetLength() - 3;
+	amountString.Format("%.0f", amount);
+	int i = 0;//금액의 3자리수마다 ','를 붙여준다
+	i = amountString.GetLength() - 3;
 	while (i > 0) {
-		amount_.Insert(i, ',');
+		amountString.Insert(i, ',');
 		i = i - 3;
 	}
-
+	//잔액의 3자리수마다 ','를 붙여준다
 	CString balance_;
 	balance_.Format("%.0f", balance);
 	i = balance_.GetLength() - 3;
@@ -149,28 +152,23 @@ void AccountBookForm::OnRecordButtonClicked() {
 		balance_.Insert(i, ',');
 		i = i - 3;
 	}
-	if (dynamic_cast<Income*>(account)) {
-		((CListCtrl*)GetDlgItem(IDC_LIST_ACCOUNT))->InsertItem(i, _T(""), 2);
-	}
-	else {
-		((CListCtrl*)GetDlgItem(IDC_LIST_ACCOUNT))->InsertItem(i, _T(""), 1);
-	}
-	((CListCtrl*)GetDlgItem(IDC_LIST_ACCOUNT))->SetItemText(index, 1, date_);
-	((CListCtrl*)GetDlgItem(IDC_LIST_ACCOUNT))->SetItemText(index, 2, contents);
-	((CListCtrl*)GetDlgItem(IDC_LIST_ACCOUNT))->SetItemText(index, 3, amount_);
-	((CListCtrl*)GetDlgItem(IDC_LIST_ACCOUNT))->SetItemText(index, 4, balance_);
-	((CListCtrl*)GetDlgItem(IDC_LIST_ACCOUNT))->SetItemText(index, 5, note);
+	//리스트뷰에 항목을 추가한다
+	((CListCtrl*)GetDlgItem(IDC_LIST_ACCOUNT))->SetItemText(index, 0, dateString);
+	((CListCtrl*)GetDlgItem(IDC_LIST_ACCOUNT))->SetItemText(index, 1, contents);
+	((CListCtrl*)GetDlgItem(IDC_LIST_ACCOUNT))->SetItemText(index, 2, amountString);
+	((CListCtrl*)GetDlgItem(IDC_LIST_ACCOUNT))->SetItemText(index, 3, balance_);
+	((CListCtrl*)GetDlgItem(IDC_LIST_ACCOUNT))->SetItemText(index, 4, note);
 }
 
 void AccountBookForm::OnCorrectButtonClicked() {
 	Long index;
 	index = ((CListCtrl*)GetDlgItem(IDC_LIST_ACCOUNT))->GetSelectionMark();
-	CString amount_;
+	CString amountString;
 	CString note;
-	GetDlgItem(IDC_EDIT_AMOUNT)->GetWindowTextA(amount_);
+	GetDlgItem(IDC_EDIT_AMOUNT)->GetWindowTextA(amountString);
 	GetDlgItem(IDC_EDIT_NOTE)->GetWindowTextA(note);
 	Currency amount;
-	amount = atof(amount_);
+	amount = atof(amountString);
 	int outgoCheck = ((CButton*)GetDlgItem(IDC_RADIO_OUTGO))->GetCheck();
 
 	if (outgoCheck == BST_CHECKED) {
@@ -185,9 +183,9 @@ void AccountBookForm::OnCorrectButtonClicked() {
 		amount *= -1;
 	}
 	int i = 0;
-	i = amount_.GetLength() - 3;
+	i = amountString.GetLength() - 3;
 	while (i > 0) {
-		amount_.Insert(i, ',');
+		amountString.Insert(i, ',');
 		i = i - 3;
 	}
 	Currency balance = account->GetBalance();
@@ -200,9 +198,9 @@ void AccountBookForm::OnCorrectButtonClicked() {
 		i = i - 3;
 	}
 	note = CString(account->GetNote().c_str());
-	((CListCtrl*)GetDlgItem(IDC_LIST_ACCOUNT))->SetItemText(index, 3, amount_);
-	((CListCtrl*)GetDlgItem(IDC_LIST_ACCOUNT))->SetItemText(index, 4, balance_);
-	((CListCtrl*)GetDlgItem(IDC_LIST_ACCOUNT))->SetItemText(index, 5, note);
+	((CListCtrl*)GetDlgItem(IDC_LIST_ACCOUNT))->SetItemText(index, 2, amountString);
+	((CListCtrl*)GetDlgItem(IDC_LIST_ACCOUNT))->SetItemText(index, 3, balance_);
+	((CListCtrl*)GetDlgItem(IDC_LIST_ACCOUNT))->SetItemText(index, 4, note);
 	GetDlgItem(IDC_EDIT_BALANCE)->SetWindowTextA(balance_);
 	i = 1;
 	while (index + i < this->accountBook->GetLength()) {
@@ -241,7 +239,7 @@ void AccountBookForm::OnListViewItemDoubleClicked(NMHDR* pNotifystruct, LRESULT*
 	AfxExtractSubString(month, date, 1, '-');
 	AfxExtractSubString(day, date, 2, '-');
 	CTime temp(atoi(year), atoi(month), atoi(day),0,0,0);
-	CTime date_ = temp;
+	CTime dateString = temp;
 	Account* account = this->accountBook->GetAt(index);
 	if (dynamic_cast<Income*>(account)) {
 		((CButton*)GetDlgItem(IDC_RADIO_INCOME))->SetCheck(BST_CHECKED);
@@ -251,7 +249,7 @@ void AccountBookForm::OnListViewItemDoubleClicked(NMHDR* pNotifystruct, LRESULT*
 		((CButton*)GetDlgItem(IDC_RADIO_OUTGO))->SetCheck(BST_CHECKED);
 		((CButton*)GetDlgItem(IDC_RADIO_INCOME))->SetCheck(BST_UNCHECKED);
 	}
-	((CDateTimeCtrl*)GetDlgItem(IDC_DATETIMEPICKER_DATE))->SetTime(&date_);
+	((CDateTimeCtrl*)GetDlgItem(IDC_DATETIMEPICKER_DATE))->SetTime(&dateString);
 	GetDlgItem(IDC_EDIT_CONTENTS)->SetWindowTextA(contents);
 	GetDlgItem(IDC_EDIT_AMOUNT)->SetWindowTextA(amount);
 	GetDlgItem(IDC_EDIT_BALANCE)->SetWindowTextA(balance);
@@ -271,14 +269,14 @@ void AccountBookForm::OnAmountEditKillFocus() {
 			Currency newBalance;
 			CString amount;
 			GetDlgItem(IDC_EDIT_AMOUNT)->GetWindowTextA(amount);
-			Currency amount_;
-			amount_ = atof(amount);
+			Currency amountString;
+			amountString = atof(amount);
 			int outgoChecked;
 			outgoChecked = ((CButton*)GetDlgItem(IDC_RADIO_OUTGO))->GetCheck();
 			if (outgoChecked == BST_CHECKED) {
-				amount_ = amount_ * -1;
+				amountString = amountString * -1;
 			}
-			newBalance = balance + amount_;
+			newBalance = balance + amountString;
 			CString newBalance_;
 			newBalance_.Format("%.0f", newBalance);
 			GetDlgItem(IDC_EDIT_BALANCE)->SetWindowTextA(newBalance_);
@@ -295,14 +293,14 @@ void AccountBookForm::OnAmountEditKillFocus() {
 			Currency newBalance;
 			CString amount;
 			GetDlgItem(IDC_EDIT_AMOUNT)->GetWindowTextA(amount);
-			Currency amount_;
-			amount_ = atof(amount);
+			Currency amountString;
+			amountString = atof(amount);
 			int outgoChecked;
 			outgoChecked = ((CButton*)GetDlgItem(IDC_RADIO_OUTGO))->GetCheck();
 			if (outgoChecked == BST_CHECKED) {
-				amount_ = amount_ * -1;
+				amountString = amountString * -1;
 			}
-			newBalance = balance + amount_;
+			newBalance = balance + amountString;
 			CString newBalance_;
 			newBalance_.Format("%.0f", newBalance);
 			GetDlgItem(IDC_EDIT_BALANCE)->SetWindowTextA(newBalance_);
@@ -346,10 +344,10 @@ void AccountBookForm::Load() {
 		year = time.GetYear();
 		month = time.GetMonth();
 		day = time.GetDay();
-		Date date_(year, static_cast<Month>(month), day);
-		Currency amount_;
-		amount_ = atof(amount);
-		this->accountBook->Record(date_, (LPCTSTR)contents, amount_, (LPCTSTR)note);
+		Date dateString(year, static_cast<Month>(month), day);
+		Currency amountString;
+		amountString = atof(amount);
+		this->accountBook->Record(dateString, (LPCTSTR)contents, amountString, (LPCTSTR)note);
 		rs.MoveNext();
 	}
 	rs.Close();
@@ -359,21 +357,21 @@ void AccountBookForm::Load() {
 CString AccountBookForm::MakeCode(Long index) {
 	CDatabase db;
 	CRecordset rs(&db);
-	Account* account = this->accountBook->GetAt(index);
-	Date date = account->GetDate();
-	CString date_;
-	date_.Format("%4d-%02d-%02d", date.GetYear(), date.GetMonth(), date.GetDay());
-	CString sql;
-	sql.Format("SELECT account.code FROM account WHERE account.date='%s' ORDER BY code DESC;",(LPCTSTR)date_);
-	db.OpenEx("DSN=accountBook;UID=root;PWD=Pagaous08217!");
-	rs.Open(AFX_DB_USE_DEFAULT_TYPE, sql);
-	CString number = "0000";
-	if (!rs.IsEOF()) {
+	Account* account = this->accountBook->GetAt(index); //index번째 계정을 가져온다
+	Date date = account->GetDate(); //날짜를 가져온다
+	CString dateString;  //날짜를 '0000-00-00' 형태로 만든다
+	dateString.Format("%4d-%02d-%02d", date.GetYear(), date.GetMonth(), date.GetDay());
+	CString sql; //Account 테이블에서 날짜와 일치하는 데이터를 찾는다
+	sql.Format("SELECT account.code FROM account WHERE account.date='%s' ORDER BY code DESC;",(LPCTSTR)dateString);
+	db.OpenEx("DSN=accountBook;UID=root;PWD=Pagaous08217!"); //MySQL DB에 연결한다
+	rs.Open(AFX_DB_USE_DEFAULT_TYPE, sql);  //레코드 집합을 연다
+	CString number = "0000"; //초기코드를 만든다
+	if (!rs.IsEOF()) { //레코드집합이 있으면 필드값을 반환한다
 		rs.GetFieldValue((short)0, number);
 	}
-	int codeNumber = _ttoi(number.Right(4));
-	codeNumber++;
-	CString code;
+	int codeNumber = _ttoi(number.Right(4)); //마지막 4자리를 가져온다
+	codeNumber++; //1을 더한다
+	CString code; //날짜에 코드값을 더해주어 새로운 코드를 만든다
 	code.Format("%4d%02d%02d%04d",date.GetYear(),date.GetMonth(),date.GetDay(), codeNumber);
 	rs.Close();
 	db.Close();
@@ -382,24 +380,23 @@ CString AccountBookForm::MakeCode(Long index) {
 
 void AccountBookForm::Insert(Long index) {
 	CDatabase db;
-	Account* account = this->accountBook->GetAt(index);
+	Account* account = this->accountBook->GetAt(index); //index번째 계정을 가져온다
 	CString sql;
-	CString code = MakeCode(index);
-	Date date = account->GetDate(); 
-	CString date_;
-	date_.Format("%4d-%02d-%02d", date.GetYear(), date.GetMonth(), date.GetDay());
-	Currency amount = account->GetAmount();
-	
-	
-	CString amount_;
-	amount_.Format("%.0f", amount);
-	sql.Format("INSERT INTO account(code,date,contents,amount,note)"
+	CString code = MakeCode(index); //index번째 계정의 코드(Primary Key)를 만든다
+	Date date = account->GetDate(); //계정에서 날짜를 가져온다
+	CString dateString; //날짜를 '0000-00-00' 형태로 만든다
+	dateString.Format("%4d-%02d-%02d", date.GetYear(), date.GetMonth(), date.GetDay());
+	Currency amount = account->GetAmount();  //금액을 가져온다
+	CString amountString;
+	amountString.Format("%.0f", amount);
+	//가져온 정보들을 Account 테이블에 넣는다
+	sql.Format("INSERT INTO Account(code,date,contents,amount,note)"
 		"VALUES('%s','%s','%s','%s','%s');",
 		(LPCTSTR)code,
-		(LPCTSTR)date_, account->GetContents().c_str(), (LPCTSTR)amount_, account->GetNote().c_str());
-	db.OpenEx("DSN=accountBook;UID=root;PWD=Pagaous08217!");
-	db.ExecuteSQL(sql);
-	db.Close();
+		(LPCTSTR)dateString, account->GetContents().c_str(), (LPCTSTR)amountString, account->GetNote().c_str());
+	db.OpenEx("DSN=accountBook;UID=root;PWD=Pagaous08217!");//MySQL DB에 연결한다
+	db.ExecuteSQL(sql); //sql문을 실행한다
+	db.Close(); //DB를 닫는다
 }
 
 void AccountBookForm::Modify(Long index) {
@@ -420,9 +417,9 @@ void AccountBookForm::Modify(Long index) {
 	Currency amount = account->GetAmount();
 
 
-	CString amount_;
-	amount_.Format("%.0f", amount);
-	sql.Format("UPDATE account SET amount='%s',note='%s' WHERE code='%s';", (LPCTSTR)amount_, account->GetNote().c_str(), (LPCTSTR)code);
+	CString amountString;
+	amountString.Format("%.0f", amount);
+	sql.Format("UPDATE account SET amount='%s',note='%s' WHERE code='%s';", (LPCTSTR)amountString, account->GetNote().c_str(), (LPCTSTR)code);
 	db.ExecuteSQL(sql);
 	rs.Close();
 	db.Close();
@@ -442,16 +439,16 @@ void AccountBookForm::Save() {
 		rs.GetFieldValue((short)0, code);
 		Account* account = this->accountBook->GetAt(i);
 		Date date = account->GetDate();
-			CString date_;
-		date_.Format("%4d-%02d-%02d", date.GetYear(), date.GetMonth(), date.GetDay());
+			CString dateString;
+		dateString.Format("%4d-%02d-%02d", date.GetYear(), date.GetMonth(), date.GetDay());
 		Currency amount = account->GetAmount();
 		
-		CString amount_;
-		amount_.Format("%.0f", amount);
+		CString amountString;
+		amountString.Format("%.0f", amount);
 		sql.Format("INSERT INTO account(code,date,contents,amount,note)"
 			"VALUES('%s','%s','%s','%s','%s');",
 			(LPCTSTR)code,
-			(LPCTSTR)date_, account->GetContents().c_str(), (LPCTSTR)amount_, account->GetNote().c_str());
+			(LPCTSTR)dateString, account->GetContents().c_str(), (LPCTSTR)amountString, account->GetNote().c_str());
 		db.ExecuteSQL(sql);
 		rs.MoveNext();
 		i++;

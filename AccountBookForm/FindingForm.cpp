@@ -237,12 +237,12 @@ void FindingForm::OnCalculateButtonClicked() {
 void FindingForm::OnListViewItemDoubleClicked(NMHDR* pNotifystruct, LRESULT* result) {
 	CString date, contents, amount, balance, note;
 	Long index = ((CListCtrl*)GetDlgItem(IDC_LIST_ACCOUNT))->GetSelectionMark();
-	date = ((CListCtrl*)GetDlgItem(IDC_LIST_ACCOUNT))->GetItemText(index, 1);
-	contents = ((CListCtrl*)GetDlgItem(IDC_LIST_ACCOUNT))->GetItemText(index, 2);
-	amount = ((CListCtrl*)GetDlgItem(IDC_LIST_ACCOUNT))->GetItemText(index, 3);
+	date = ((CListCtrl*)GetDlgItem(IDC_LIST_ACCOUNT))->GetItemText(index, 0);
+	contents = ((CListCtrl*)GetDlgItem(IDC_LIST_ACCOUNT))->GetItemText(index, 1);
+	amount = ((CListCtrl*)GetDlgItem(IDC_LIST_ACCOUNT))->GetItemText(index, 2);
 	amount.Remove(',');
-	balance = ((CListCtrl*)GetDlgItem(IDC_LIST_ACCOUNT))->GetItemText(index, 4);
-	note = ((CListCtrl*)GetDlgItem(IDC_LIST_ACCOUNT))->GetItemText(index, 5);
+	balance = ((CListCtrl*)GetDlgItem(IDC_LIST_ACCOUNT))->GetItemText(index, 3);
+	note = ((CListCtrl*)GetDlgItem(IDC_LIST_ACCOUNT))->GetItemText(index, 4);
 	AccountBookForm* accountBookForm = (AccountBookForm*)CWnd::FindWindowA("#32770", "°¡°èºÎ");
 	CString year, month, day;
 	AfxExtractSubString(year, date, 0, '-');
