@@ -152,6 +152,9 @@ void AccountBookForm::OnRecordButtonClicked() {
 		balance_.Insert(i, ',');
 		i = i - 3;
 	}
+	
+	((CListCtrl*)GetDlgItem(IDC_LIST_ACCOUNT))->InsertItem(index, _T(""));
+	
 	//리스트뷰에 항목을 추가한다
 	((CListCtrl*)GetDlgItem(IDC_LIST_ACCOUNT))->SetItemText(index, 0, dateString);
 	((CListCtrl*)GetDlgItem(IDC_LIST_ACCOUNT))->SetItemText(index, 1, contents);
